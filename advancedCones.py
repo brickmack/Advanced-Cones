@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Advanced Cones",
 	"author": "Mackenzie Crawford, brickmack",
-	"version": (1, 0, 0),
+	"version": (1, 1, 0),
     "category": "Object",
 }
 
@@ -10,7 +10,7 @@ import bmesh
 import math
 
 def build_geometry(verts, edges, faces, steps, name):
-	#takes set of points and edges given, makes it into an actual object, solid-of-revolutions it
+	#takes set of points and edges given, makes it into an actual object, solid-of-revolutions it, appropriately sets its location
 	mesh = bpy.data.meshes.new("mesh")
 	mesh.from_pydata(verts, edges, faces) 
 	obj = bpy.data.objects.new(name, mesh)
@@ -26,6 +26,8 @@ def build_geometry(verts, edges, faces, steps, name):
 	bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=0.0001)
 	
 	bm.to_mesh(obj.data)
+	
+	obj.location = bpy.context.scene.cursor_location
 	bm.free()
 
 class TangentOgiveGen(bpy.types.Operator):
@@ -81,7 +83,7 @@ class TangentOgiveGen(bpy.types.Operator):
 
 		build_geometry(verts, edges, faces, self.segments, "Tangent Ogive")
 
-		return {'FINISHED'} #operator finished successfully
+		return {'FINISHED'}
 		
 class SecantOgiveGen(bpy.types.Operator):
 	"""Secant Ogive Generator"""
@@ -89,16 +91,16 @@ class SecantOgiveGen(bpy.types.Operator):
 	bl_label = "Add Secant Ogive"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	ogiveRadius = bpy.props.FloatProperty(name="Ogive Radius", default=1.5, min=0, max=2147483647)
+	ogiveRadius = bpy.props.FloatProperty(name="Ogive Radius", default=2.5, min=0, max=2147483647, step=1)
 	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647)
 	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647)
 	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 
 	def execute(self, context):
-		if self.ogiveRadius <= self.apexLength/2:
-			self.ogiveRadius = (self.apexLength/2)+0.001
-
+		if self.ogiveRadius < (math.pow(self.baseRadius, 2) + math.pow(self.apexLength, 2))/(2*self.baseRadius):
+			self.ogiveRadius = (math.pow(self.baseRadius, 2) + math.pow(self.apexLength, 2))/(2*self.baseRadius)
+	
 		verts = []
 		edges = []
 		faces = []
@@ -119,16 +121,17 @@ class SecantOgiveGen(bpy.types.Operator):
 
 		return {'FINISHED'}
 		
-class ProlateSpheroidGen(bpy.types.Operator):
-	"""Prolate Spheroid Generator"""
-	bl_idname = "object.add_prolate_spheroid"
-	bl_label = "Add Prolate Spheroid"
+class ProlateHemispheroidGen(bpy.types.Operator):
+	"""Prolate Hemispheroid Generator"""
+	bl_idname = "object.add_prolate_hemispheroid"
+	bl_label = "Add Prolate Hemispheroid"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647)
 	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647)
 	rings = bpy.props.IntProperty(name="Rings", default=32, min=3, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=1, max=2147483647)
+	smoothTip = bpy.props.BoolProperty(name="Smooth tip", description="Takes the final 1/n-length step, and further divides it into an additional n rings", default=True)
 
 	def execute(self, context):
 		verts = []
@@ -139,14 +142,30 @@ class ProlateSpheroidGen(bpy.types.Operator):
 		
 		x=0
 		i=1
-		while x<self.length:
-			verts.append((x, self.radius*math.sqrt(1-(math.pow(x/self.length, 2))), 0))
+		while i<=self.rings:
+			verts.append((x, self.radius*math.sqrt(1-(math.pow(x, 2)/math.pow(self.length, 2))), 0))
 			edges.append((i-1, i))
 			x=x+stepSize
 			i=i+1
+
+		if self.smoothTip == True:
+			#smooth tip takes the final 1/n-length step, and further divides it into an additional n rings
+			#Allows drastic improvement in resolution in the most curved portion, without affecting the rest of the object
+			x=x-stepSize
+			stepSize = stepSize/self.rings
+			
+			while i<=(self.rings)*2:
+				verts.append((x, self.radius*math.sqrt(1-(math.pow(x, 2)/math.pow(self.length, 2))), 0))
+				edges.append((i-1, i))
+				x=x+stepSize
+				i=i+1
+			
+		verts.append((x, 0, 0))
+		edges.append((i-1, i))
+		
 		edges.pop()
 		
-		build_geometry(verts, edges, faces, self.segments, "Prolate Spheroid")
+		build_geometry(verts, edges, faces, self.segments, "Prolate Hemispheroid")
 	
 		return {'FINISHED'}
 		
@@ -259,7 +278,7 @@ class HaackSeriesConeGen(bpy.types.Operator):
 def register():
 	bpy.utils.register_class(TangentOgiveGen)
 	bpy.utils.register_class(SecantOgiveGen)
-	bpy.utils.register_class(ProlateSpheroidGen)
+	bpy.utils.register_class(ProlateHemispheroidGen)
 	bpy.utils.register_class(ParabolicConeGen)
 	bpy.utils.register_class(PowerSeriesConeGen)
 	bpy.utils.register_class(HaackSeriesConeGen)
@@ -267,7 +286,7 @@ def register():
 def unregister():
 	bpy.utils.unregister_class(TangentOgiveGen)
 	bpy.utils.unregister_class(SecantOgiveGen)
-	bpy.utils.unregister_class(ProlateSpheroidGen)
+	bpy.utils.unregister_class(ProlateHemispheroidGen)
 	bpy.utils.unregister_class(ParabolicConeGen)
 	bpy.utils.unregister_class(PowerSeriesConeGen)
 	bpy.utils.unregister_class(HaackSeriesConeGen)
