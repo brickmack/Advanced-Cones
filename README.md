@@ -7,7 +7,7 @@ Coming soon
 
 ## Compatibility
 
-**Versions for Blender 2.80 onwards and 2.79 previously are mutually incompatible**. If you are still using Blender 2.79, you must use Advanced Cones v1.1.1, commit [7725f908080646654eb91eb55f7bd2942ee6ee48](https://github.com/brickmack/Advanced-Cones/commit/7725f908080646654eb91eb55f7bd2942ee6ee48). Likewise, users of Blender 2.80 or later must use Advanced Cones v1.2 or later
+**Versions for Blender 2.80 onwards and 2.79 previously are mutually incompatible**. If you are still using Blender 2.79, you must use Advanced Cones v1.1.1, commit [7725f908080646654eb91eb55f7bd2942ee6ee48](https://github.com/brickmack/Advanced-Cones/blob/7725f908080646654eb91eb55f7bd2942ee6ee48/advancedCones.py). Likewise, users of Blender 2.80 or later must use Advanced Cones v1.2 or later
 
 ## Changelog
 
