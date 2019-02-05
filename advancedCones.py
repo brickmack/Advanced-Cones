@@ -1,8 +1,11 @@
 bl_info = {
     "name": "Advanced Cones",
+	"description": "Tool to generate various nose cone shapes",
 	"author": "Mackenzie Crawford, brickmack",
-	"version": (1, 1, 0),
-    "category": "Object",
+	"version": (1, 1, 1),
+	"blender": (2, 79, 0),
+	"support": "COMMUNITY",
+    "category": "Add Mesh"
 }
 
 import bpy
@@ -36,10 +39,10 @@ class TangentOgiveGen(bpy.types.Operator):
 	bl_label = "Add Tangent Ogive"         # display name in the interface.
 	bl_options = {'REGISTER', 'UNDO'}  # enable undo for the operator.
 
-	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647)
+	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
 	sphereRings = bpy.props.IntProperty(name="Sphere Rings", default=32, min=0, max=2147483647)
-	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647)
-	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647)
+	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
+	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
 	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 
@@ -92,8 +95,8 @@ class SecantOgiveGen(bpy.types.Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	ogiveRadius = bpy.props.FloatProperty(name="Ogive Radius", default=2.5, min=0, max=2147483647, step=1)
-	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647)
-	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647)
+	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
+	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
 	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 
@@ -127,8 +130,8 @@ class ProlateHemispheroidGen(bpy.types.Operator):
 	bl_label = "Add Prolate Hemispheroid"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647)
+	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
 	rings = bpy.props.IntProperty(name="Rings", default=32, min=3, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=1, max=2147483647)
 	smoothTip = bpy.props.BoolProperty(name="Smooth tip", description="Takes the final 1/n-length step, and further divides it into an additional n rings", default=True)
@@ -175,9 +178,9 @@ class ParabolicConeGen(bpy.types.Operator):
 	bl_label = "Add Parabolic Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647)
-	K = bpy.props.FloatProperty(name="K'", default=0.5, min=0, max=1)
+	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	K = bpy.props.FloatProperty(name="K'", default=0.5, min=0, max=1, step=1)
 	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 
@@ -210,9 +213,9 @@ class PowerSeriesConeGen(bpy.types.Operator):
 	bl_label = "Add Power Series Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647)
-	n = bpy.props.FloatProperty(name="n", default=0.5, min=0, max=1)
+	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	n = bpy.props.FloatProperty(name="n", default=0.5, min=0, max=1, step=1)
 	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 	
@@ -245,9 +248,9 @@ class HaackSeriesConeGen(bpy.types.Operator):
 	bl_label = "Add Haack Series Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647)
-	C = bpy.props.FloatProperty(name="C", default=0.5, min=0, max=1)
+	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	C = bpy.props.FloatProperty(name="C", default=0.5, min=0, max=1, step=1)
 	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 	
