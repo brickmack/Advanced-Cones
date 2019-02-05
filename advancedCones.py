@@ -2,8 +2,8 @@ bl_info = {
     "name": "Advanced Cones",
 	"description": "Tool to generate various nose cone shapes",
 	"author": "Mackenzie Crawford, brickmack",
-	"version": (1, 1, 1),
-	"blender": (2, 79, 0),
+	"version": (1, 2, 0),
+	"blender": (2, 80, 0),
 	"support": "COMMUNITY",
     "category": "Add Mesh"
 }
@@ -17,8 +17,7 @@ def build_geometry(verts, edges, faces, steps, name):
 	mesh = bpy.data.meshes.new("mesh")
 	mesh.from_pydata(verts, edges, faces) 
 	obj = bpy.data.objects.new(name, mesh)
-	scene = bpy.context.scene
-	scene.objects.link(obj)
+	bpy.context.collection.objects.link(obj)
 
 	bm = bmesh.new()
 	bm.from_mesh(obj.data)
@@ -278,18 +277,14 @@ class HaackSeriesConeGen(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
+classes = (TangentOgiveGen, SecantOgiveGen, ProlateHemispheroidGen, ParabolicConeGen, PowerSeriesConeGen, HaackSeriesConeGen)
+
 def register():
-	bpy.utils.register_class(TangentOgiveGen)
-	bpy.utils.register_class(SecantOgiveGen)
-	bpy.utils.register_class(ProlateHemispheroidGen)
-	bpy.utils.register_class(ParabolicConeGen)
-	bpy.utils.register_class(PowerSeriesConeGen)
-	bpy.utils.register_class(HaackSeriesConeGen)
+	from bpy.utils import register_class
+	for cls in classes:
+		register_class(cls)
 
 def unregister():
-	bpy.utils.unregister_class(TangentOgiveGen)
-	bpy.utils.unregister_class(SecantOgiveGen)
-	bpy.utils.unregister_class(ProlateHemispheroidGen)
-	bpy.utils.unregister_class(ParabolicConeGen)
-	bpy.utils.unregister_class(PowerSeriesConeGen)
-	bpy.utils.unregister_class(HaackSeriesConeGen)
+	from bpy.utils import unregister_class
+	for cls in reversed(classes):
+		unregister_class(cls)

@@ -1,7 +1,19 @@
 # Advanced-Cones
 Blender addon for more complex cone-like shapes (tangent and secant ogives, prolate spheroids, parabolic cones, power series and Haack series). See https://en.wikipedia.org/wiki/Nose_cone_design for mathematical explanation
 
+## Usage
+
+Coming soon
+
+## Compatibility
+
+**Versions for Blender 2.80 onwards and 2.79 previously are mutually incompatible**. If you are still using Blender 2.79, you must use Advanced Cones v1.1.1, commit [7725f908080646654eb91eb55f7bd2942ee6ee48](https://github.com/brickmack/Advanced-Cones/commit/7725f908080646654eb91eb55f7bd2942ee6ee48). Likewise, users of Blender 2.80 or later must use Advanced Cones v1.2 or later
+
 ## Changelog
+
+### v1.2
+
+* **Updated for Blender 2.80 API changes**
 
 ### v1.1.1
 
