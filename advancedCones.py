@@ -1,9 +1,10 @@
 bl_info = {
     "name": "Advanced Cones",
 	"description": "Tool to generate various nose cone shapes",
-	"author": "Mackenzie Crawford, brickmack",
-	"version": (1, 2, 0),
+	"author": "Mackenzie Crawford",
+	"version": (1, 3, 0),
 	"blender": (2, 80, 0),
+	"location": "View3D > Add > Mesh",
 	"support": "COMMUNITY",
     "category": "Add Mesh"
 }
@@ -11,13 +12,19 @@ bl_info = {
 import bpy
 import bmesh
 import math
+import mathutils
 
 def build_geometry(verts, edges, faces, steps, name):
 	#takes set of points and edges given, makes it into an actual object, solid-of-revolutions it, appropriately sets its location
 	mesh = bpy.data.meshes.new("mesh")
 	mesh.from_pydata(verts, edges, faces) 
 	obj = bpy.data.objects.new(name, mesh)
-	bpy.context.collection.objects.link(obj)
+	if (2, 80, 0) < bpy.app.version:
+		#use the new API
+		bpy.context.collection.objects.link(obj)
+	else:
+		#use the old one
+		bpy.context.scene.objects.link(obj)
 
 	bm = bmesh.new()
 	bm.from_mesh(obj.data)
@@ -27,6 +34,9 @@ def build_geometry(verts, edges, faces, steps, name):
 	bmesh.ops.spin(bm, geom=geom, cent=obj.location, axis=(1,0,0), dvec=(0,0,0), angle=-2*math.pi, steps=steps, use_duplicate=0)
 	bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=0.0001)
 	
+	#rotate to vertical. Hacky temporary solution, will simply draw vertically to begin with later but I'd have to change a bunch of the math code...
+	bmesh.ops.rotate(bm, cent=obj.location, matrix=mathutils.Matrix.Rotation(math.radians(90.0), 3, 'Y'), verts=bm.verts[:])
+	
 	bm.to_mesh(obj.data)
 	
 	obj.location = bpy.context.scene.cursor_location
@@ -34,14 +44,15 @@ def build_geometry(verts, edges, faces, steps, name):
 
 class TangentOgiveGen(bpy.types.Operator):
 	"""Tangent Ogive Generator"""      # blender will use this as a tooltip for menu items and buttons.
-	bl_idname = "object.add_tangent_ogive"        # unique identifier for buttons and menu items to reference.
-	bl_label = "Add Tangent Ogive"         # display name in the interface.
+	bl_idname = "mesh.add_tangent_ogive"        # unique identifier for buttons and menu items to reference.
+	bl_label = "Add Tangent Ogive"         # display name when searching
+	bl_menulabel = "Tangent Ogive"     # display name in menu
 	bl_options = {'REGISTER', 'UNDO'}  # enable undo for the operator.
 
-	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
-	sphereRings = bpy.props.IntProperty(name="Sphere Rings", default=32, min=0, max=2147483647)
 	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
 	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
+	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
+	sphereRings = bpy.props.IntProperty(name="Sphere Rings", default=32, min=0, max=2147483647)
 	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 
@@ -65,7 +76,7 @@ class TangentOgiveGen(bpy.types.Operator):
 
 		x=xa
 		i=1
-		#draw sphere section (for spherically blunted ogive)
+		#draw sphere section
 		while x<xt:
 			verts.append((x-self.apexLength, math.sqrt(math.pow(self.sphereRadius, 2)-math.pow(x-xc, 2)), 0))
 			edges.append((i-1, i))
@@ -78,7 +89,8 @@ class TangentOgiveGen(bpy.types.Operator):
 			edges.append((i-1, i))
 			x=x+stepSize
 			i=i+1
-		#fill in the final step manually because it bugs out in the loop, still working out why
+		
+		#fill in base
 		verts.append((0, self.baseRadius, 0))
 		edges.append((i-1, i))
 		edges.pop()
@@ -89,44 +101,53 @@ class TangentOgiveGen(bpy.types.Operator):
 		
 class SecantOgiveGen(bpy.types.Operator):
 	"""Secant Ogive Generator"""
-	bl_idname = "object.add_secant_ogive"
+	bl_idname = "mesh.add_secant_ogive"
 	bl_label = "Add Secant Ogive"
+	bl_menulabel = "Secant Ogive"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	ogiveRadius = bpy.props.FloatProperty(name="Ogive Radius", default=2.5, min=0, max=2147483647, step=1)
 	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
 	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
+	ogiveRadius = bpy.props.FloatProperty(name="Ogive Radius", default=2.5, min=0, max=2147483647, step=1)
 	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 
 	def execute(self, context):
-		if self.ogiveRadius < (math.pow(self.baseRadius, 2) + math.pow(self.apexLength, 2))/(2*self.baseRadius):
-			self.ogiveRadius = (math.pow(self.baseRadius, 2) + math.pow(self.apexLength, 2))/(2*self.baseRadius)
-	
-		verts = []
-		edges = []
-		faces = []
-		
-		stepSize = self.apexLength/self.ogiveRings		
-		alpha = math.atan(self.baseRadius/self.apexLength) - math.acos((math.sqrt(math.pow(self.apexLength, 2) + math.pow(self.baseRadius, 2))/(2*self.ogiveRadius)))
-		
-		x=0
-		i=1
-		while x < self.apexLength:
-			verts.append((x-self.apexLength, math.sqrt(math.pow(self.ogiveRadius, 2) - math.pow(self.ogiveRadius*math.cos(alpha)-x, 2))+(self.ogiveRadius*math.sin(alpha)), 0))
-			edges.append((i-1, i))
-			x=x+stepSize
-			i=i+1
-		edges.pop()
-		
-		build_geometry(verts, edges, faces, self.segments, "Secant Ogive")
+		try:
+			verts = []
+			edges = []
+			faces = []
+			
+			stepSize = self.apexLength/self.ogiveRings		
+			alpha = math.atan(self.baseRadius/self.apexLength) - math.acos((math.sqrt(math.pow(self.apexLength, 2) + math.pow(self.baseRadius, 2))/(2*self.ogiveRadius)))
+			
+			x=0
+			i=1
+			while x < self.apexLength:
+				verts.append((x-self.apexLength, math.sqrt(math.pow(self.ogiveRadius, 2) - math.pow(self.ogiveRadius*math.cos(alpha)-x, 2))+(self.ogiveRadius*math.sin(alpha)), 0))
+				edges.append((i-1, i))
+				x=x+stepSize
+				i=i+1
+				
+			#fill in base
+			verts.append((0, self.baseRadius, 0))
+			edges.append((i-1, i))	
+			
+			edges.pop()
+			
+			build_geometry(verts, edges, faces, self.segments, "Secant Ogive")
+		except:
+			#ogive radius was too small for the given base radius and apex length. Resize
+			self.ogiveRadius = math.sqrt(math.pow(self.apexLength, 2) + math.pow(self.baseRadius, 2))/2 + 0.01 #interesting problem for anyone interested: programmatically derive the lowest possible offset here to make the program not crash
+			self.execute(context)
 
 		return {'FINISHED'}
 		
 class ProlateHemispheroidGen(bpy.types.Operator):
 	"""Prolate Hemispheroid Generator"""
-	bl_idname = "object.add_prolate_hemispheroid"
+	bl_idname = "mesh.add_prolate_hemispheroid"
 	bl_label = "Add Prolate Hemispheroid"
+	bl_menulabel = "Prolate Hemispheroid"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
@@ -152,7 +173,7 @@ class ProlateHemispheroidGen(bpy.types.Operator):
 
 		if self.smoothTip == True:
 			#smooth tip takes the final 1/n-length step, and further divides it into an additional n rings
-			#Allows drastic improvement in resolution in the most curved portion, without affecting the rest of the object
+			#allows drastic improvement in resolution in the most curved portion, without affecting the rest of the object
 			x=x-stepSize
 			stepSize = stepSize/self.rings
 			
@@ -161,7 +182,7 @@ class ProlateHemispheroidGen(bpy.types.Operator):
 				edges.append((i-1, i))
 				x=x+stepSize
 				i=i+1
-			
+		
 		verts.append((x, 0, 0))
 		edges.append((i-1, i))
 		
@@ -173,8 +194,9 @@ class ProlateHemispheroidGen(bpy.types.Operator):
 		
 class ParabolicConeGen(bpy.types.Operator):
 	"""Parabolic Cone Generator"""
-	bl_idname = "object.add_parabolic_cone"
+	bl_idname = "mesh.add_parabolic_cone"
 	bl_label = "Add Parabolic Cone"
+	bl_menulabel = "Parabolic Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
@@ -197,7 +219,7 @@ class ParabolicConeGen(bpy.types.Operator):
 			edges.append((i-1, i))
 			x=x+stepSize
 			i=i+1
-		#fill in the final step manually because it bugs out in the loop, still working out why
+		#fill in base
 		verts.append((0, self.radius, 0))
 		edges.append((i-1, i))
 		edges.pop()
@@ -208,8 +230,9 @@ class ParabolicConeGen(bpy.types.Operator):
 
 class PowerSeriesConeGen(bpy.types.Operator):
 	"""Power Series Cone Generator"""
-	bl_idname = "object.add_power_series_cone"
+	bl_idname = "mesh.add_power_series_cone"
 	bl_label = "Add Power Series Cone"
+	bl_menulabel = "Power Series Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
@@ -232,7 +255,7 @@ class PowerSeriesConeGen(bpy.types.Operator):
 			edges.append((i-1, i))
 			x=x+stepSize
 			i=i+1
-		#fill in the final step manually because it bugs out in the loop, still working out why
+		#fill in base
 		verts.append((0, self.radius, 0))
 		edges.append((i-1, i))
 		edges.pop()
@@ -243,13 +266,14 @@ class PowerSeriesConeGen(bpy.types.Operator):
 		
 class HaackSeriesConeGen(bpy.types.Operator):
 	"""Haack Series Cone Generator"""
-	bl_idname = "object.add_haack_series_cone"
+	bl_idname = "mesh.add_haack_series_cone"
 	bl_label = "Add Haack Series Cone"
+	bl_menulabel = "Haack Series Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
 	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
-	C = bpy.props.FloatProperty(name="C", default=0.5, min=0, max=1, step=1)
+	C = bpy.props.FloatProperty(name="C", default=0.5, min=0, max=2147483647, step=1)
 	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
 	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
 	
@@ -268,7 +292,7 @@ class HaackSeriesConeGen(bpy.types.Operator):
 			edges.append((i-1, i))
 			x=x+stepSize
 			i=i+1
-		#fill in the final step manually because it bugs out in the loop, still working out why
+		#fill in base
 		verts.append((0, self.radius, 0))
 		edges.append((i-1, i))
 		edges.pop()
@@ -276,15 +300,82 @@ class HaackSeriesConeGen(bpy.types.Operator):
 		build_geometry(verts, edges, faces, self.segments, "Haack Series Cone")
 		
 		return {'FINISHED'}
+		
+class SphericallyBluntedConeGen(bpy.types.Operator):
+	"""Spherically Blunted Cone Generator"""
+	bl_idname = "mesh.add_spherically_blunted_cone"
+	bl_label = "Add Spherically Blunted Cone"
+	bl_menulabel = "Spherically Blunted Cone"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
+	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
+	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
+	sphereRings = bpy.props.IntProperty(name="Sphere Rings", default=32, min=0, max=2147483647)
+	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	
+	def execute(self, context):
+		if self.sphereRadius >= self.baseRadius: #if we don't do this, the universe explodes
+			self.sphereRadius = self.baseRadius-0.001
+	
+		xt = (math.pow(self.apexLength, 2)/self.baseRadius) * math.sqrt(math.pow(self.sphereRadius, 2) / (math.pow(self.baseRadius, 2) + math.pow(self.apexLength, 2)))
+		yt = xt * self.baseRadius / self.apexLength
+		
+		xc = xt + math.sqrt(math.pow(self.sphereRadius, 2) - math.pow(yt, 2)) #center of spherical cap
+		xa = xc - self.sphereRadius
+		
+		sphereStepSize=(xt-xa)/self.sphereRings
+		
+		verts = []
+		edges = []
+		faces = []
+		
+		x=xa
+		i=1
+		#draw sphere section
+		while x<xt:
+			verts.append((x-self.apexLength, math.sqrt(math.pow(self.sphereRadius, 2)-math.pow(x-xc, 2)), 0))
+			edges.append((i-1, i))
+			x=x+sphereStepSize
+			i=i+1
+		
+		#fill in base
+		verts.append((0, self.baseRadius, 0))
+		edges.append((i-1, i))
+		edges.pop()
+		
+		build_geometry(verts, edges, faces, self.segments, "Blunted Cone")
+		
+		return {'FINISHED'}
+		
 
-classes = (TangentOgiveGen, SecantOgiveGen, ProlateHemispheroidGen, ParabolicConeGen, PowerSeriesConeGen, HaackSeriesConeGen)
+classes = (TangentOgiveGen, SecantOgiveGen, ProlateHemispheroidGen, ParabolicConeGen, PowerSeriesConeGen, HaackSeriesConeGen, SphericallyBluntedConeGen)
+
+		
+def menu_func(self, context):
+	for cls in classes:
+		self.layout.operator(cls.bl_idname, text=cls.bl_menulabel)
 
 def register():
 	from bpy.utils import register_class
 	for cls in classes:
 		register_class(cls)
+	
+	if (2, 80, 0) < bpy.app.version:
+		#use the new API
+		bpy.types.VIEW3D_MT_mesh_add.prepend(menu_func)
+	else:
+		#use the old one
+		bpy.types.INFO_MT_mesh_add.prepend(menu_func)
 
 def unregister():
 	from bpy.utils import unregister_class
 	for cls in reversed(classes):
 		unregister_class(cls)
+		
+	if (2, 80, 0) < bpy.app.version:
+		#use the new API
+		bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
+	else:
+		#use the old one
+		bpy.types.INFO_MT_mesh_add.remove(menu_func)
