@@ -10,7 +10,6 @@ bl_info = {
 }
 
 import bpy
-#from bpy.types import Menu
 import bmesh
 import math
 import mathutils
@@ -455,8 +454,8 @@ class HaackSeriesConeGen(bpy.types.Operator):
 class NConicGen(bpy.types.Operator):
 	#N-Conic Generator
 	bl_idname = "mesh.add_nconic"
-	bl_label = "Add n-conic"
-	bl_menulabel = "n-conic"
+	bl_label = "Add N-conic"
+	bl_menulabel = "N-conic"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	n = bpy.props.IntProperty(name="n", default=2, min=1, max=10, step=1)

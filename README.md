@@ -19,7 +19,7 @@ For each cone type, click the header to show or hide its information
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/nr3t8GY.png" align=middle/>
+<img src="https://i.imgur.com/1oqTgIW.png" align=middle/>
 
 This cone can be spherically blunted.
 
@@ -52,7 +52,7 @@ The apex point can be found from:
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/nr3t8GY.png" align=middle/>
+<img src="https://i.imgur.com/C86yr5e.png" align=middle/>
 
 <h4>Mathematical basis</h4>
 
@@ -156,6 +156,12 @@ Advanced Cones v1.3 supports both Blender 2.79 and 2.80. It has been tested and 
 If you're using Blender 2.80, make sure you have the latest beta release! There have been API changes which I know break this addon on previous builds. I will continue to update this whenever updates to the beta come out, to maintain compatibility. This was tested on the March 7 2019 build of Blender 2.80
 
 ## Changelog
+
+### v2.0.1
+
+* Minor text fix
+
+* Corrected screenshot URLs in readme
 
 ### v2.0
 
