@@ -5,21 +5,23 @@ Mathematical explanations in this readme are adapted from [the Wikipedia article
 
 ## Usage
 
-Advanced Cones adds seven new types of cone shapes, primarily relevant for aerodynamic nosecone design. This image shows them with their default parameters. Left to right they are the tangent ogive, secant ogive, prolate hemispheroid (ellipse), parabolic cone, power series cone, Haack series cone, and spherically blunted cone.
+Advanced Cones adds seven new types of cone shapes, primarily relevant for aerodynamic nosecone design. This image shows them with their default parameters. Left to right they are the tangent ogive, secant ogive, prolate hemispheroid (ellipse), parabolic cone, power series cone, Haack series cone, and n-conic.
 
-<img src="https://i.imgur.com/EqbEwvT.png" align=middle/>
+<img src="https://i.imgur.com/dpfjrFv.png" align=middle/>
 
 All of the supported cone objects can be accessed through the Add > Mesh menu, or through Blender's search function
 
-<img src="https://i.imgur.com/bQvQYaz.png" align=middle/>
+<img src="https://i.imgur.com/I6zkrax.png" align=middle/>
 
 For each cone type, click the header to show or hide its information
 
-<details><summary><h3>Tangent Ogive (spherically blunted)</h3></summary>
+<details><summary><h3>Tangent Ogive</h3></summary>
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/k6MD3na.png" align=middle/>
+<img src="https://i.imgur.com/nr3t8GY.png" align=middle/>
+
+This cone can be spherically blunted.
 
 <h4>Mathematical basis</h4>
 
@@ -33,7 +35,7 @@ The radius y at any point x, as x varies from 0 to L is:
 
 <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/3682c253f41bce7dee9e23e6b433bbe0c472f90b" align=middle/>
 
-For a spherically-blunted tangent ogive (sphere radius > 0), the tangency point where the sphere meets the tangent ogive can be found from: 
+For a spherically-blunted tangent ogive, the tangency point where the sphere meets the tangent ogive can be found from: 
 
 <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/2eee988cfe6178c7c38456862a18f97e052cd633" align=middle/>
 
@@ -50,7 +52,7 @@ The apex point can be found from:
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/J3GtuTi.png" align=middle/>
+<img src="https://i.imgur.com/nr3t8GY.png" align=middle/>
 
 <h4>Mathematical basis</h4>
 
@@ -67,11 +69,9 @@ The radius y at any point x as x varies from 0 to L is:
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/ltY1yuk.png" align=middle/>
+<img src="https://i.imgur.com/nr3t8GY.png" align=middle/>
 
 The Smooth Tip checkbox doubles the number of rings calculated, using an additional n rings in the 1/nth (forward-most) section. Without this, the result is overly pointy
-
-**Warning:** The prolate hemispheroid currently spawns upside down. This is a bug, it will be fixed in the next version
 
 <h4>Mathematical basis</h4>
 
@@ -84,7 +84,7 @@ This is a half-ellipse, rotated about its center line. The radius y at a point x
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/xqFuJRE.png" align=middle/>
+<img src="https://i.imgur.com/gD7DvxC.png" align=middle/>
 
 <h4>Mathematical basis</h4>
 
@@ -99,7 +99,7 @@ Where K' is between 0 and 1, inclusive
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/k3sesul.png" align=middle/>
+<img src="https://i.imgur.com/Lh0DMKQ.png" align=middle/>
 
 <h4>Mathematical basis</h4>
 
@@ -114,7 +114,7 @@ where n is between 0 and 1, inclusive. n = 0 produces a cylinder, n = 1/2 produc
 
 <h4>Parameters</h4>
 
-<img src="https://i.imgur.com/52nvZzd.png" align=middle/>
+<img src="https://i.imgur.com/2qumO3R.png" align=middle/>
 
 <h4>Mathematical basis</h4>
 
@@ -125,14 +125,20 @@ Not geometrically derived, unlike the rest. The radius y at a point x as x varie
 where C >= 0. The Haack series cone for C = 0 is called the LD-Haack or Von Karman ogive, and gives the minimum drag for the given length and diameter. The Haack series cone for C = 1/3 is called the LV-Haack and gives the minimum drag for a given length and volume.
 </details>
 
-<details><summary><h3>Spherically Blunted Cone</h3></summary>
-  <h4>Parameters</h4>
+<details><summary><h3>N-Conic</h3></summary>
+<h4>Parameters</h4>
 
-<img src="https://i.imgur.com/YD5Qk1t.png" align=middle/>
+<img src="https://i.imgur.com/muCs5kz.png" align=middle/>
+
+The n parameter controls the number of frustums that make up the shape. Additional length and radius parameters are added as the n value is changed.
+
+N-conics of n=1 can be spherically blunted. This replaces the previous "Spherically blunted cone" feature. Blunting of n-conics for n>1 is not yet supported
 
 <h4>Mathematical basis</h4>
 
-Just a cone with a spherical cap on the end. The spherical cap is positioned such that the profile of the cone intersects the sphere at exactly one point, where the two curves are tangent to each other. The tangency point can be found as
+Just a stack of connected frustums, terminating at a point. Note that currently, Apex Length is the length of the whole object, and the lengths of each frustum are defined as the distance from the apex point, **not** from the base.
+
+For spherically-blunted n-conics, the cap is positioned such that the profile of the cone intersects the sphere at exactly one point, where the two curves are tangent to each other. The tangency point can be found as
 
 <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/c18a13450a63ad70c537dacd177ddd3793c7a56b" align=middle/>
 
@@ -145,9 +151,41 @@ where rn is the radius of the spherical nose cap. The center of the spherical no
 
 ## Compatibility
 
-Advanced Cones v1.3 supports both Blender 2.79 and 2.80. It **should** support all of 2.7x, but this has not been tested. If anyone encounters issues with them, please report an issue, I will try to maintain backwards compatibility as long as practical. All screenshots in this readme were taken in Blender 2.79, but the functionality is unchanged in 2.80.
+Advanced Cones v1.3 supports both Blender 2.79 and 2.80. It has been tested and works at least as far back as Blender 2.69, but with some minor issues (see Bugs). If anyone encounters issues with them, please report an issue, I will try to maintain backwards compatibility as long as practical. All screenshots in this readme were taken in Blender 2.80, but the functionality is unchanged in other versions.
+
+If you're using Blender 2.80, make sure you have the latest beta release! There have been API changes which I know break this addon on previous builds. I will continue to update this whenever updates to the beta come out, to maintain compatibility. This was tested on the March 7 2019 build of Blender 2.80
 
 ## Changelog
+
+### v2.0
+
+* Added n-conic tool
+
+* Removed "Spherically capped cone" tool. Users should instead use the n-conic tool, with n=1 and Blunted enabled. Note that spherical blunting on n-conics is currently *only* supported for n=1
+
+* All Advanced Cones shapes are now found in a submenu, under Add -> Mesh -> Advanced Cones
+
+* Can add cones in edit mode
+
+* Checkbox to enable/disable spherical blunting on cone, tangent ogive
+
+* Spherical blunting is now based on repeated rotations rather than analytical definition. Gives even spacing along the curve instead of along the axis
+
+* Can set rotation of objects at spawn
+
+* Prolate hemispheroid spawns right-side-up
+
+* Added draw() method to each class, allows semi-dynamic control of what parameters are visible to the user
+
+* Moved faces array instantiation to geometry builder
+
+* Added protection for base radius of zero on tangent ogives (previously resulted in a division by zero)
+
+* Delta-qualification for backwards compatibility to at least Blender 2.69
+
+* Updated for API changes in latest Blender 2.80 beta release
+
+* Updated readme for above changes, screenshots now show Blender 2.80 interface
 
 ### v1.3
 
@@ -201,14 +239,18 @@ Advanced Cones v1.3 supports both Blender 2.79 and 2.80. It **should** support a
 
 ## Planned features
 
-* Set rotation at spawn
+* Spherically-blunted n-conics for n>1
 
-* New shapes: biconics
+* N-conic lengths should be defined by length from the base, not by length from the apex (too confusing!)
 
-## Known issues
+* Spherically-blunted secant ogives (and possibly other shapes?)
 
-* Prolate hemispheroid spawns upside down (symptomatic of deeper problem and current hacky fix)
+* Tangent and secant ogives should both be defined as revolutions, not analytically
 
-* Need to support inserting object while in edit mode
+## Known bugs
 
-* Many unhandled limits of the mathematical definitions of each shape still exist and cause errors. The exception-based handling used in the secant ogive class is the current best solution, but still presents a problem in deriving the minimum offset to not crash the program. Further work needed
+* Some unhandled limits of the mathematical definitions of each shape still exist and cause errors. The exception-based handling used in the secant ogive class is the current best solution, but still presents a problem in deriving the minimum offset to not crash the program. Further work needed
+
+* In Blender 2.69 (and possibly newer, probably older) the step size for attribute sliders is too high. Users should manually enter values instead. Sliders work properly in 2.79 and 2.80
+
+* When adding a cone to an existing object, the rotation attribute does not work in Blender 2.80. When adding a cone as a new object, the rotation works correctly
