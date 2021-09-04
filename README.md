@@ -56,7 +56,7 @@ The apex point can be found from:
 
 <h4>Mathematical basis</h4>
 
-Similar to a tangent ogive, except the ogive radius is a parameter, not a derived value, and the the base of the shape is not on the radius of the circle defined by the ogive radius (meaning a cylindrical extension below the ogive will not be tangent to the base of the curve). The ogive radius, ρ, must be at minimum sqrt(L^2 + R^2) / 2. If a smaller ogive radius is set for a fixed base radius and apex length combination, Advanced Cones will automatically reset it to the minimum allowable ogive radius (plus a small constant forced by how floating point numbers are handled). Similarly, if the base radius or apex length are increased beyond the allowable values for a fixed ogive radius, the ogive radius will be recalculated to the minimum.
+Similar to a tangent ogive, except the ogive radius is a parameter, not a derived value, and the base of the shape is not on the radius of the circle defined by the ogive radius (meaning a cylindrical extension below the ogive will not be tangent to the base of the curve). The ogive radius, ρ, must be at minimum sqrt(L^2 + R^2) / 2. If a smaller ogive radius is set for a fixed base radius and apex length combination, Advanced Cones will automatically reset it to the minimum allowable ogive radius (plus a small constant forced by how floating point numbers are handled). Similarly, if the base radius or apex length are increased beyond the allowable values for a fixed ogive radius, the ogive radius will be recalculated to the minimum.
 
 <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/83caab8639031a42fb5e1295b9396dc9f2d8ce9d" align=middle/>
 
