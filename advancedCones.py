@@ -2,8 +2,8 @@ bl_info = {
     "name": "Advanced Cones",
 	"description": "Tool to generate various nose cone shapes",
 	"author": "Mackenzie Crawford",
-	"version": (2, 0, 0),
-	"blender": (2, 80, 0),
+	"version": (2, 0, 2),
+	"blender": (2, 93, 0),
 	"location": "View3D > Add > Mesh",
 	"support": "COMMUNITY",
     "category": "Add Mesh"
@@ -103,14 +103,14 @@ class TangentOgiveGen(bpy.types.Operator):
 	bl_menulabel = "Tangent Ogive"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
-	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
-	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
-	sphereRings = bpy.props.IntProperty(name="Sphere Rings", default=32, min=1, max=2147483647)
-	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
-	blunted = bpy.props.BoolProperty(name="Spherically Blunted", default=False)
+	baseRadius: bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
+	apexLength: bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
+	sphereRadius: bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
+	sphereRings: bpy.props.IntProperty(name="Sphere Rings", default=32, min=1, max=2147483647)
+	ogiveRings: bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	blunted: bpy.props.BoolProperty(name="Spherically Blunted", default=False)
 	
 	def draw(self, context):
 		box = self.layout.column()
@@ -206,12 +206,12 @@ class SecantOgiveGen(bpy.types.Operator):
 	bl_menulabel = "Secant Ogive"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	baseRadius = bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
-	apexLength = bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
-	ogiveRadius = bpy.props.FloatProperty(name="Ogive Radius", default=2.5, min=0, max=2147483647, step=1)
-	ogiveRings = bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	baseRadius: bpy.props.FloatProperty(name="Base Radius", default=1, min=0, max=2147483647, step=1)
+	apexLength: bpy.props.FloatProperty(name="Apex Length", default=2, min=0, max=2147483647, step=1)
+	ogiveRadius: bpy.props.FloatProperty(name="Ogive Radius", default=2.5, min=0, max=2147483647, step=1)
+	ogiveRings: bpy.props.IntProperty(name="Ogive Rings", default=32, min=1, max=2147483647)
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
 	
 	def draw(self, context):
 		box = self.layout.column()
@@ -259,12 +259,12 @@ class ProlateHemispheroidGen(bpy.types.Operator):
 	bl_menulabel = "Prolate Hemispheroid"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
-	rings = bpy.props.IntProperty(name="Rings", default=32, min=3, max=2147483647)
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=1, max=2147483647)
-	smoothTip = bpy.props.BoolProperty(name="Smooth tip", description="Takes the final 1/n-length step, and further divides it into an additional n rings", default=True)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	radius: bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length: bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	rings: bpy.props.IntProperty(name="Rings", default=32, min=3, max=2147483647)
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=1, max=2147483647)
+	smoothTip: bpy.props.BoolProperty(name="Smooth tip", description="Takes the final 1/n-length step, and further divides it into an additional n rings", default=True)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
 	
 	def draw(self, context):
 		box = self.layout.column()
@@ -320,13 +320,13 @@ class ParabolicConeGen(bpy.types.Operator):
 	bl_menulabel = "Parabolic Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
-	K = bpy.props.FloatProperty(name="K'", default=0.5, min=0, max=1, step=1)
-	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
-	blunted = bpy.props.BoolProperty(name="Spherically Blunted", default=True)
+	radius: bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length: bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	K: bpy.props.FloatProperty(name="K'", default=0.5, min=0, max=1, step=1)
+	rings: bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	blunted: bpy.props.BoolProperty(name="Spherically Blunted", default=True)
 	
 	def draw(self, context):
 		box = self.layout.column()
@@ -366,12 +366,12 @@ class PowerSeriesConeGen(bpy.types.Operator):
 	bl_menulabel = "Power Series Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
-	n = bpy.props.FloatProperty(name="n", default=0.5, min=0, max=1, step=1)
-	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	radius: bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length: bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	n: bpy.props.FloatProperty(name="n", default=0.5, min=0, max=1, step=1)
+	rings: bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
 	
 	def draw(self, context):
 		box = self.layout.column()
@@ -411,12 +411,12 @@ class HaackSeriesConeGen(bpy.types.Operator):
 	bl_menulabel = "Haack Series Cone"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	radius = bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
-	length = bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
-	C = bpy.props.FloatProperty(name="C", default=0.5, min=0, max=2147483647, step=1)
-	rings = bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	radius: bpy.props.FloatProperty(name="Radius", default=1, min=0, max=2147483647, step=1)
+	length: bpy.props.FloatProperty(name="Length", default=2, min=0, max=2147483647, step=1)
+	C: bpy.props.FloatProperty(name="C", default=0.5, min=0, max=2147483647, step=1)
+	rings: bpy.props.IntProperty(name="Rings", default=32, min=1, max=2147483647)
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
 	
 	def draw(self, context):
 		box = self.layout.column()
@@ -458,39 +458,39 @@ class NConicGen(bpy.types.Operator):
 	bl_menulabel = "N-conic"
 	bl_options = {'REGISTER', 'UNDO'}
 	
-	n = bpy.props.IntProperty(name="n", default=2, min=1, max=10, step=1)
+	n: bpy.props.IntProperty(name="n", default=2, min=1, max=10, step=1)
 	
-	apexLength = bpy.props.FloatProperty(name="Apex length", default = 2, min=0, max=2147483647, step=1)
+	apexLength: bpy.props.FloatProperty(name="Apex length", default = 2, min=0, max=2147483647, step=1)
 	
 	#apparently all of these have to be manually declared? Isn't there any way to do this procedurally??
-	radius0 = bpy.props.FloatProperty(name="Base radius", default=1, min=0, max=2147483647, step=1)
-	radius1 = bpy.props.FloatProperty(name="Radius 1", default=0.75, min=0, max=2147483647, step=1)
-	radius2 = bpy.props.FloatProperty(name="Radius 2", default=0.6, min=0, max=2147483647, step=1)
-	radius3 = bpy.props.FloatProperty(name="Radius 3", default=0.5, min=0, max=2147483647, step=1)
-	radius4 = bpy.props.FloatProperty(name="Radius 4", default=0.3, min=0, max=2147483647, step=1)
-	radius5 = bpy.props.FloatProperty(name="Radius 5", default=0.2, min=0, max=2147483647, step=1)
-	radius6 = bpy.props.FloatProperty(name="Radius 6", default=0.1, min=0, max=2147483647, step=1)
-	radius7 = bpy.props.FloatProperty(name="Radius 7", default=0.05, min=0, max=2147483647, step=1)
-	radius8 = bpy.props.FloatProperty(name="Radius 8", default=0.01, min=0, max=2147483647, step=1)
-	radius9 = bpy.props.FloatProperty(name="Radius 9", default=0, min=0, max=2147483647, step=1)
+	radius0: bpy.props.FloatProperty(name="Base radius", default=1, min=0, max=2147483647, step=1)
+	radius1: bpy.props.FloatProperty(name="Radius 1", default=0.75, min=0, max=2147483647, step=1)
+	radius2: bpy.props.FloatProperty(name="Radius 2", default=0.6, min=0, max=2147483647, step=1)
+	radius3: bpy.props.FloatProperty(name="Radius 3", default=0.5, min=0, max=2147483647, step=1)
+	radius4: bpy.props.FloatProperty(name="Radius 4", default=0.3, min=0, max=2147483647, step=1)
+	radius5: bpy.props.FloatProperty(name="Radius 5", default=0.2, min=0, max=2147483647, step=1)
+	radius6: bpy.props.FloatProperty(name="Radius 6", default=0.1, min=0, max=2147483647, step=1)
+	radius7: bpy.props.FloatProperty(name="Radius 7", default=0.05, min=0, max=2147483647, step=1)
+	radius8: bpy.props.FloatProperty(name="Radius 8", default=0.01, min=0, max=2147483647, step=1)
+	radius9: bpy.props.FloatProperty(name="Radius 9", default=0, min=0, max=2147483647, step=1)
 	
 	#we don't actually use length0 for anything, but we will fill a space in the array with Nothing for math reasons
-	length1 = bpy.props.FloatProperty(name="Length 1", default=1, min=0, max=2147483647, step=1)
-	length2 = bpy.props.FloatProperty(name="Length 2", default=0.5, min=0, max=2147483647, step=1)
-	length3 = bpy.props.FloatProperty(name="Length 3", default=0.25, min=0, max=2147483647, step=1)
-	length4 = bpy.props.FloatProperty(name="Length 4", default=0.125, min=0, max=2147483647, step=1)
-	length5 = bpy.props.FloatProperty(name="Length 5", default=0.0625, min=0, max=2147483647, step=1)
-	length6 = bpy.props.FloatProperty(name="Length 6", default=0.03125, min=0, max=2147483647, step=1)
-	length7 = bpy.props.FloatProperty(name="Length 7", default=0.015625, min=0, max=2147483647, step=1)
-	length8 = bpy.props.FloatProperty(name="Length 8", default=0.0078125, min=0, max=2147483647, step=1)
-	length9 = bpy.props.FloatProperty(name="Length 9", default=0.00390625, min=0, max=2147483647, step=1)
+	length1: bpy.props.FloatProperty(name="Length 1", default=1, min=0, max=2147483647, step=1)
+	length2: bpy.props.FloatProperty(name="Length 2", default=0.5, min=0, max=2147483647, step=1)
+	length3: bpy.props.FloatProperty(name="Length 3", default=0.25, min=0, max=2147483647, step=1)
+	length4: bpy.props.FloatProperty(name="Length 4", default=0.125, min=0, max=2147483647, step=1)
+	length5: bpy.props.FloatProperty(name="Length 5", default=0.0625, min=0, max=2147483647, step=1)
+	length6: bpy.props.FloatProperty(name="Length 6", default=0.03125, min=0, max=2147483647, step=1)
+	length7: bpy.props.FloatProperty(name="Length 7", default=0.015625, min=0, max=2147483647, step=1)
+	length8: bpy.props.FloatProperty(name="Length 8", default=0.0078125, min=0, max=2147483647, step=1)
+	length9: bpy.props.FloatProperty(name="Length 9", default=0.00390625, min=0, max=2147483647, step=1)
 	
-	sphereRadius = bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
-	sphereRings = bpy.props.IntProperty(name="Sphere Rings", default=32, min=1, max=2147483647)
-	blunted = bpy.props.BoolProperty(name="Spherically Blunted", default=False)
+	sphereRadius: bpy.props.FloatProperty(name="Sphere Radius", default=0.2, min=0, max=2147483647, step=1)
+	sphereRings: bpy.props.IntProperty(name="Sphere Rings", default=32, min=1, max=2147483647)
+	blunted: bpy.props.BoolProperty(name="Spherically Blunted", default=False)
 	
-	segments = bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
-	rotation = bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
+	segments: bpy.props.IntProperty(name="Segments", default=32, min=3, max=2147483647)
+	rotation: bpy.props.FloatVectorProperty(name="Rotation", default=(0,0,0), min=-2147483648, max=2147483647, step=10, subtype="XYZ")
 	
 	def draw(self, context):
 		box = self.layout.column()
