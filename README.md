@@ -151,11 +151,13 @@ where rn is the radius of the spherical nose cap. The center of the spherical no
 
 ## Compatibility
 
-Advanced Cones v1.3 supports both Blender 2.79 and 2.80. It has been tested and works at least as far back as Blender 2.69, but with some minor issues (see Bugs). If anyone encounters issues with them, please report an issue, I will try to maintain backwards compatibility as long as practical. All screenshots in this readme were taken in Blender 2.80, but the functionality is unchanged in other versions.
-
-If you're using Blender 2.80, make sure you have the latest beta release! There have been API changes which I know break this addon on previous builds. I will continue to update this whenever updates to the beta come out, to maintain compatibility. This was tested on the March 7 2019 build of Blender 2.80
+Advanced Cones v1.3 supports both Blender 2.79 through 2.93. It has been tested and works at least as far back as Blender 2.69, but with some minor issues (see Bugs). If anyone encounters issues with them, please report an issue, I will try to maintain backwards compatibility as long as practical. All screenshots in this readme were taken in Blender 2.80, but the functionality is unchanged in other versions.
 
 ## Changelog
+
+### v2.0.2
+
+* Update for Blender 2.93 compatibility
 
 ### v2.0.1
 
